@@ -4,7 +4,7 @@ import br.com.alura.forumapi.domain.model.StatusTopic
 import br.com.alura.forumapi.domain.model.Topic
 import java.time.LocalDateTime
 
-data class TopicGetDto(
+data class GetTopicDto(
     val id: Long? = null,
     val title: String,
     val message: String,
@@ -12,8 +12,8 @@ data class TopicGetDto(
     val creationDate: LocalDateTime,
 ) {
     companion object {
-        fun fromTopic(topic: Topic): TopicGetDto {
-            return TopicGetDto(
+        fun fromTopic(topic: Topic): GetTopicDto {
+            return GetTopicDto(
                 id = topic.id,
                 title = topic.title,
                 message = topic.message,

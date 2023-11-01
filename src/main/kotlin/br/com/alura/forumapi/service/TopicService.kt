@@ -1,8 +1,8 @@
 package br.com.alura.forumapi.service
 
-import br.com.alura.forumapi.domain.dto.topic.TopicGetDto
-import br.com.alura.forumapi.domain.dto.topic.TopicPostDto
-import br.com.alura.forumapi.domain.dto.topic.TopicPutDto
+import br.com.alura.forumapi.domain.dto.topic.GetTopicDto
+import br.com.alura.forumapi.domain.dto.topic.PostTopicDto
+import br.com.alura.forumapi.domain.dto.topic.PutTopicDto
 import br.com.alura.forumapi.domain.model.Answer
 import br.com.alura.forumapi.domain.model.Topic
 import br.com.alura.forumapi.domain.model.User
@@ -34,17 +34,17 @@ class TopicService(
         )
     )
 
-    fun findAll(): List<TopicGetDto> = topics.map { TopicGetDto.fromTopic(topic = it) }
+    fun findAll(): List<GetTopicDto> = topics.map { GetTopicDto.fromTopic(topic = it) }
 
-    fun findById(id: Long): TopicGetDto? {
+    fun findById(id: Long): GetTopicDto? {
         val topic = topics.find { it.id == id } ?: return null
 
-        return TopicGetDto.fromTopic(topic)
+        return GetTopicDto.fromTopic(topic)
     }
 
     fun findAnswers(id: Long): List<Answer> = topics.find { it.id == id }?.answers ?: emptyList()
 
-    fun create(dto: TopicPostDto): Long {
+    fun create(dto: PostTopicDto): Long {
         val course = courseService.findById(dto.courseId)
         val user = userService.findById(dto.userId)
 
@@ -62,7 +62,7 @@ class TopicService(
         return id
     }
 
-    fun update(dto: TopicPutDto): Long {
+    fun update(dto: PutTopicDto): Long {
         val topic = topics.find { it.id == dto.id } ?: return -1
 
         topics.indexOf(topic).let { index ->
