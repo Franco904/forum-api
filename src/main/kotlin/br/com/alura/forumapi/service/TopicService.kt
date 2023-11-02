@@ -6,6 +6,7 @@ import br.com.alura.forumapi.domain.dto.topic.PutTopicDto
 import br.com.alura.forumapi.domain.model.Answer
 import br.com.alura.forumapi.domain.model.Topic
 import br.com.alura.forumapi.domain.model.User
+import br.com.alura.forumapi.exception.classes.NotFoundException
 import org.springframework.stereotype.Service
 
 @Service
@@ -37,14 +38,16 @@ class TopicService(
     fun findAll(): List<GetTopicDto> = topics.map { GetTopicDto.fromTopic(topic = it) }
 
     fun findById(id: Long): GetTopicDto? {
-        val topic = topics.find { it.id == id } ?: return null
+        val topic = topics.find { it.id == id } ?: throw NotFoundException("Topic not found!")
 
         return GetTopicDto.fromTopic(topic)
     }
 
-    fun findAnswers(id: Long): List<Answer> = topics.find { it.id == id }?.answers ?: emptyList()
+    fun findAnswers(id: Long): List<Answer> {
+        return topics.find { it.id == id }?.answers ?: throw NotFoundException("Topic not found!")
+    }
 
-    fun create(dto: PostTopicDto): Long {
+    fun create(dto: PostTopicDto): GetTopicDto {
         val course = courseService.findById(dto.courseId)
         val user = userService.findById(dto.userId)
 
@@ -58,26 +61,28 @@ class TopicService(
         )
 
         topics = topics.plus(topic).toMutableList()
-
-        return id
+        return GetTopicDto.fromTopic(topic)
     }
 
-    fun update(dto: PutTopicDto): Long {
-        val topic = topics.find { it.id == dto.id } ?: return -1
+    fun update(dto: PutTopicDto): GetTopicDto {
+        val topic = topics.find { it.id == dto.id } ?: throw NotFoundException("Topic not found!")
+        var updatedTopic: Topic
 
         topics.indexOf(topic).let { index ->
-            if (index == -1 || index >= topics.size) return -1
+            if (index == -1 || index >= topics.size) throw NotFoundException("Topic not found!")
             topics[index] = topic.copyWith(
                 dto.title,
                 dto.message,
             )
+
+            updatedTopic = topics[index]
         }
 
-        return dto.id
+        return GetTopicDto.fromTopic(updatedTopic)
     }
 
     fun remove(id: Long): Long {
-        val topic = topics.find { it.id == id } ?: return -1
+        val topic = topics.find { it.id == id } ?: throw NotFoundException("Topic not found!")
         topics.remove(topic)
 
         return id
