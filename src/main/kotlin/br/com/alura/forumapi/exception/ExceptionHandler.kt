@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice
 class ExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException::class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    fun handleBadResquestError(
+    fun handleBadRequestError(
         exception: MethodArgumentNotValidException,
         request: HttpServletRequest,
     ): GetErrorDto {
