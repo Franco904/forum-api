@@ -1,6 +1,9 @@
 package br.com.alura.forumapi.domain.model
 
-import jakarta.persistence.*
+import jakarta.persistence.Entity
+import jakarta.persistence.GeneratedValue
+import jakarta.persistence.GenerationType
+import jakarta.persistence.Id
 
 @Entity(name = "courses")
 data class Course(
