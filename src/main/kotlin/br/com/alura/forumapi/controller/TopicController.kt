@@ -4,6 +4,7 @@ import br.com.alura.forumapi.domain.dto.topic.GetTopicDto
 import br.com.alura.forumapi.domain.dto.topic.PostTopicDto
 import br.com.alura.forumapi.domain.dto.topic.PutTopicDto
 import br.com.alura.forumapi.service.TopicService
+import jakarta.transaction.Transactional
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*

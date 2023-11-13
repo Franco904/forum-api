@@ -1,24 +1,13 @@
 package br.com.alura.forumapi.service
 
 import br.com.alura.forumapi.domain.model.Course
+import br.com.alura.forumapi.domain.repository.CourseRepository
+import br.com.alura.forumapi.exception.classes.NotFoundException
 import org.springframework.stereotype.Service
 
 @Service
-class CourseService {
-    private val courses: MutableList<Course> by lazy {
-        mutableListOf(
-            Course(
-                id = 1,
-                name = "Kotlin",
-                category = "Programming Languages",
-            ),
-            Course(
-                id = 2,
-                name = "IntelliJ",
-                category = "IDEs",
-            ),
-        )
-    }
-
-    fun findById(id: Long): Course = courses.find { it.id == id } ?: throw Exception("Course not found!")
+class CourseService(
+    private val courseRepository: CourseRepository,
+) {
+    fun findById(id: Long): Course = courseRepository.findById(id).orElseThrow { NotFoundException("Course not found!") }
 }
