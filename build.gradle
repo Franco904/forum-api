@@ -7,6 +7,7 @@ plugins {
 	id 'org.jetbrains.kotlin.plugin.spring' version '1.8.22'
 	id 'org.jetbrains.kotlin.plugin.jpa' version '1.9.20'
 	id 'org.jetbrains.kotlin.plugin.noarg' version '1.9.20'
+	id 'org.flywaydb.flyway' version '10.0.1'
 }
 
 group = 'br.com.alura'
@@ -21,16 +22,30 @@ repositories {
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	// Spring
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+
+	// Validation
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+	// Data
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.data:spring-data-jpa:3.1.5'
 	implementation 'com.h2database:h2:2.2.224'
-	implementation 'com.fasterxml.jackson.module:jackson-module-kotlin'
-	implementation 'org.jetbrains.kotlin:kotlin-reflect'
+	implementation 'org.flywaydb:flyway-core:10.0.1'
+	implementation "io.github.serpro69:kotlin-faker:1.13.0"
 
+	// Request/Response serialization
+	implementation 'com.fasterxml.jackson.module:jackson-module-kotlin'
+
+	// Kotlin
+	implementation 'org.jetbrains.kotlin:kotlin-reflect'
+	implementation 'org.jetbrains.kotlin:kotlin-stdlib'
+
+	// Helper
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
+	// Test
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
