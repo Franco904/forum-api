@@ -55,7 +55,8 @@ class TopicService(
 
     @Transactional
     fun remove(id: Long): Long {
-        topicRepository.deleteById(id)
+        val topic = topicRepository.findById(id).orElseThrow { NotFoundException("Topic not found!") }
+        topicRepository.delete(topic)
 
         return id
     }
