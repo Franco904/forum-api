@@ -7,6 +7,8 @@ import br.com.alura.forumapi.domain.model.Topic
 import br.com.alura.forumapi.domain.repository.TopicRepository
 import br.com.alura.forumapi.exception.classes.NotFoundException
 import jakarta.transaction.Transactional
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 
 @Service
@@ -15,8 +17,13 @@ class TopicService(
     private val userService: UserService,
     private val topicRepository: TopicRepository,
 ) {
-    fun findAll(): List<GetTopicDto> {
-        val topics = topicRepository.findAll()
+    fun findAll(
+        courseName: String?,
+        paging: Pageable,
+    ): Page<GetTopicDto> {
+        val topics = courseName?.let {
+            topicRepository.findByCourseName(name = it, paging)
+        } ?: topicRepository.findAll(paging)
 
         return topics.map { GetTopicDto.fromTopic(topic = it) }
     }
