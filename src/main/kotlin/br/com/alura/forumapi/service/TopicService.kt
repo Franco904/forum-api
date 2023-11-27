@@ -4,7 +4,9 @@ import br.com.alura.forumapi.domain.dto.topic.GetTopicDto
 import br.com.alura.forumapi.domain.dto.topic.PostTopicDto
 import br.com.alura.forumapi.domain.dto.topic.PutTopicDto
 import br.com.alura.forumapi.domain.model.Topic
+import br.com.alura.forumapi.domain.repository.CourseRepository
 import br.com.alura.forumapi.domain.repository.TopicRepository
+import br.com.alura.forumapi.domain.repository.UserRepository
 import br.com.alura.forumapi.exception.classes.NotFoundException
 import jakarta.transaction.Transactional
 import org.springframework.data.domain.Page
@@ -13,9 +15,9 @@ import org.springframework.stereotype.Service
 
 @Service
 class TopicService(
-    private val courseService: CourseService,
-    private val userService: UserService,
     private val topicRepository: TopicRepository,
+    private val courseRepository: CourseRepository,
+    private val userRepository: UserRepository,
 ) {
     fun findAll(
         courseName: String?,
@@ -28,7 +30,7 @@ class TopicService(
         return topics.map { GetTopicDto.fromTopic(topic = it) }
     }
 
-    fun findById(id: Long): GetTopicDto? {
+    fun findById(id: Long): GetTopicDto {
         val topic = topicRepository.findById(id).orElseThrow { NotFoundException("Topic not found!") }
 
         return GetTopicDto.fromTopic(topic)
@@ -36,8 +38,8 @@ class TopicService(
 
     @Transactional
     fun create(dto: PostTopicDto): GetTopicDto {
-        val course = courseService.findById(dto.courseId)
-        val user = userService.findById(dto.userId)
+        val course = courseRepository.findById(dto.courseId).orElseThrow { NotFoundException("Course not found!") }
+        val user = userRepository.findById(dto.userId).orElseThrow { NotFoundException("User not found!") }
 
         val topic = Topic(
             title = dto.title,

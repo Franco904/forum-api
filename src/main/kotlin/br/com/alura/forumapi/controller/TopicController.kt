@@ -27,7 +27,7 @@ class TopicController(
     }
 
     @GetMapping("/{id}")
-    fun getSingle(@PathVariable id: Long): GetTopicDto? = topicService.findById(id)
+    fun getSingle(@PathVariable id: Long): GetTopicDto = topicService.findById(id)
 
     @PostMapping
     fun post(
