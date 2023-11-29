@@ -1,90 +1,83 @@
 package br.com.alura.forumapi.service
 
-import br.com.alura.forumapi.domain.dto.topic.GetTopicDto
-import br.com.alura.forumapi.domain.dto.topic.PostTopicDto
-import br.com.alura.forumapi.domain.dto.topic.PutTopicDto
-import br.com.alura.forumapi.domain.model.Answer
+import br.com.alura.forumapi.domain.dto.topic.*
 import br.com.alura.forumapi.domain.model.Topic
-import br.com.alura.forumapi.domain.model.User
+import br.com.alura.forumapi.domain.repository.CourseRepository
+import br.com.alura.forumapi.domain.repository.TopicRepository
+import br.com.alura.forumapi.domain.repository.UserRepository
 import br.com.alura.forumapi.exception.classes.NotFoundException
+import jakarta.transaction.Transactional
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 
 @Service
 class TopicService(
-    private val courseService: CourseService,
-    private val userService: UserService,
+    private val topicRepository: TopicRepository,
+    private val courseRepository: CourseRepository,
+    private val userRepository: UserRepository,
 ) {
-    private var topics: MutableList<Topic> = mutableListOf(
-        Topic(
-            id = 1,
-            title = "Dúvida com declaração de variável em Kotlin",
-            message = "Como declaro variáveis de tipo Enum no Kotlin?",
-            course = courseService.findById(1),
-            user = userService.findById(1),
-            answers = listOf(
-                Answer(
-                    id = 1,
-                    message = "É simples! Voce pode usar o val e o var",
-                    user = User(
-                        id = 2,
-                        name = "bigoneakz",
-                        email = "bgglk@email.com",
-                    ),
-                )
-            )
-        )
-    )
+    fun findAll(
+        courseName: String?,
+        paging: Pageable,
+    ): Page<GetTopicDto> {
+        val topics = courseName?.let {
+            topicRepository.findByCourseName(name = it, paging)
+        } ?: topicRepository.findAll(paging)
 
-    fun findAll(): List<GetTopicDto> = topics.map { GetTopicDto.fromTopic(topic = it) }
+        return topics.map { GetTopicDto.fromTopic(topic = it) }
+    }
 
-    fun findById(id: Long): GetTopicDto? {
-        val topic = topics.find { it.id == id } ?: throw NotFoundException("Topic not found!")
+    fun findById(id: Long): GetTopicDto {
+        val topic = topicRepository.findById(id).orElseThrow { NotFoundException("Topic not found!") }
 
         return GetTopicDto.fromTopic(topic)
     }
 
-    fun findAnswers(id: Long): List<Answer> {
-        return topics.find { it.id == id }?.answers ?: throw NotFoundException("Topic not found!")
-    }
-
+    @Transactional
     fun create(dto: PostTopicDto): GetTopicDto {
-        val course = courseService.findById(dto.courseId)
-        val user = userService.findById(dto.userId)
+        val course = courseRepository.findById(dto.courseId).orElseThrow { NotFoundException("Course not found!") }
+        val user = userRepository.findById(dto.userId).orElseThrow { NotFoundException("User not found!") }
 
-        val id = topics.size.toLong() + 1
         val topic = Topic(
-            id = id,
-            dto.title,
-            dto.message,
+            title = dto.title,
+            message = dto.message,
             course = course,
             user = user,
         )
 
-        topics = topics.plus(topic).toMutableList()
+        topicRepository.save(topic)
         return GetTopicDto.fromTopic(topic)
     }
 
+    @Transactional
     fun update(dto: PutTopicDto): GetTopicDto {
-        val topic = topics.find { it.id == dto.id } ?: throw NotFoundException("Topic not found!")
-        var updatedTopic: Topic
+        val topic = topicRepository.findById(dto.id).orElseThrow { NotFoundException("Topic not found!") }
+        val topicUpdated = topic.copyWith(dto.title, dto.message)
 
-        topics.indexOf(topic).let { index ->
-            if (index == -1 || index >= topics.size) throw NotFoundException("Topic not found!")
-            topics[index] = topic.copyWith(
-                dto.title,
-                dto.message,
-            )
+        topicRepository.save(topicUpdated)
 
-            updatedTopic = topics[index]
-        }
-
-        return GetTopicDto.fromTopic(updatedTopic)
+        return GetTopicDto.fromTopic(topicUpdated)
     }
 
+    @Transactional
     fun remove(id: Long): Long {
-        val topic = topics.find { it.id == id } ?: throw NotFoundException("Topic not found!")
-        topics.remove(topic)
+        val topic = topicRepository.findById(id).orElseThrow { NotFoundException("Topic not found!") }
+        topicRepository.delete(topic)
 
         return id
     }
+
+    fun reportByCategory(): List<GetTopicsByCategoryDto> {
+        val topicsGroupedByCategory = topicRepository.findAll().groupBy { it.course.category }
+
+        return topicsGroupedByCategory.map { result ->
+            val (category, topics) = result
+            val topicDtos = topics.map { GetTopicDto.fromTopic(it) }
+
+            GetTopicsByCategoryDto(category, topicDtos)
+        }
+    }
+
+    fun reportCountByCategory(): List<GetTopicCountByCategoryDto> = topicRepository.findCountByCourseCategory()
 }
