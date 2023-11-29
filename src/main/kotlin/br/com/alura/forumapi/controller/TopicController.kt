@@ -1,8 +1,6 @@
 package br.com.alura.forumapi.controller
 
-import br.com.alura.forumapi.domain.dto.topic.GetTopicDto
-import br.com.alura.forumapi.domain.dto.topic.PostTopicDto
-import br.com.alura.forumapi.domain.dto.topic.PutTopicDto
+import br.com.alura.forumapi.domain.dto.topic.*
 import br.com.alura.forumapi.service.TopicService
 import jakarta.validation.Valid
 import org.springframework.data.domain.Page
@@ -50,4 +48,10 @@ class TopicController(
 
     @DeleteMapping("/{id}")
     fun delete(@PathVariable id: Long): Long = topicService.remove(id)
+
+    @GetMapping("/report-by-category")
+    fun reportByCategory(): List<GetTopicsByCategoryDto> = topicService.reportByCategory()
+
+    @GetMapping("/report-by-category-count")
+    fun reportCountByCategory(): List<GetTopicCountByCategoryDto> = topicService.reportCountByCategory()
 }

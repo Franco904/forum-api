@@ -1,8 +1,6 @@
 package br.com.alura.forumapi.service
 
-import br.com.alura.forumapi.domain.dto.topic.GetTopicDto
-import br.com.alura.forumapi.domain.dto.topic.PostTopicDto
-import br.com.alura.forumapi.domain.dto.topic.PutTopicDto
+import br.com.alura.forumapi.domain.dto.topic.*
 import br.com.alura.forumapi.domain.model.Topic
 import br.com.alura.forumapi.domain.repository.CourseRepository
 import br.com.alura.forumapi.domain.repository.TopicRepository
@@ -69,4 +67,17 @@ class TopicService(
 
         return id
     }
+
+    fun reportByCategory(): List<GetTopicsByCategoryDto> {
+        val topicsGroupedByCategory = topicRepository.findAll().groupBy { it.course.category }
+
+        return topicsGroupedByCategory.map { result ->
+            val (category, topics) = result
+            val topicDtos = topics.map { GetTopicDto.fromTopic(it) }
+
+            GetTopicsByCategoryDto(category, topicDtos)
+        }
+    }
+
+    fun reportCountByCategory(): List<GetTopicCountByCategoryDto> = topicRepository.findCountByCourseCategory()
 }

@@ -3,7 +3,7 @@ package br.com.alura.forumapi.domain.model
 import jakarta.persistence.*
 import java.time.LocalDateTime
 
-@Entity(name = "topics")
+@Entity(name = Topic.TABLE_NAME)
 data class Topic(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,5 +39,9 @@ data class Topic(
             status = status ?: this.status,
             answers = answers ?: this.answers,
         )
+    }
+
+    companion object {
+        const val TABLE_NAME = "topics"
     }
 }
