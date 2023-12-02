@@ -1,9 +1,6 @@
 package br.com.alura.forumapi.domain.model
 
-import jakarta.persistence.Entity
-import jakarta.persistence.GeneratedValue
-import jakarta.persistence.GenerationType
-import jakarta.persistence.Id
+import jakarta.persistence.*
 
 @Entity(name = User.TABLE_NAME)
 data class User(
@@ -13,6 +10,9 @@ data class User(
     val name: String,
     val email: String,
     val password: String,
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinColumn(name = "users_roles")
+    val roles: List<Role> = mutableListOf(),
 ) {
     companion object {
         const val TABLE_NAME = "users"
