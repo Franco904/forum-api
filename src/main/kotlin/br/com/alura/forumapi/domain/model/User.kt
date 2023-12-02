@@ -12,6 +12,7 @@ data class User(
     val id: Long? = null,
     val name: String,
     val email: String,
+    val password: String,
 ) {
     companion object {
         const val TABLE_NAME = "users"
