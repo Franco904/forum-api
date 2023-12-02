@@ -15,7 +15,7 @@ import org.springframework.security.web.SecurityFilterChain
 class SecurityConfiguration {
     @Bean
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
-        http
+        return http
             .authorizeHttpRequests { configurer ->
                 // Aceita qualquer requisição advinda de um usuário autenticado
                 configurer.anyRequest().authenticated()
@@ -29,8 +29,7 @@ class SecurityConfiguration {
                 configurer.disable()
             }
             .httpBasic(withDefaults()) // Tipo da autenticação: basic
-
-        return http.build()
+            .build()
     }
 
     @Bean
