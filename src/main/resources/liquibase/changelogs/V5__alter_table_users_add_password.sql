@@ -1,2 +1,2 @@
 ALTER TABLE users
-ADD COLUMN password VARCHAR(45);
+ADD COLUMN password VARCHAR(60);
