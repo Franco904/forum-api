@@ -10,8 +10,13 @@ data class User(
     val name: String,
     val email: String,
     val password: String,
+
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinColumn(name = "users_roles")
+    @JoinTable(
+        name = "users_roles",
+        joinColumns = [JoinColumn(name = "user_id")],
+        inverseJoinColumns = [JoinColumn(name = "role_id")]
+    )
     val roles: List<Role> = mutableListOf(),
 ) {
     companion object {

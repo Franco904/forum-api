@@ -2,9 +2,9 @@ package br.com.alura.forumapi.config
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.security.config.Customizer.withDefaults
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
+import org.springframework.security.config.annotation.web.invoke
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
@@ -14,21 +14,25 @@ import org.springframework.security.web.SecurityFilterChain
 class SecurityConfiguration {
     @Bean
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
-        return http
-            .authorizeHttpRequests { configurer ->
-                // Aceita qualquer requisição advinda de um usuário autenticado
-                configurer.anyRequest().authenticated()
+        http {
+            authorizeHttpRequests {
+                // Define roles for each endpoint
+                authorize("/topics", hasAuthority("READ_WRITE"))
+
+                // Only accept requests sent by authenticated users
+                authorize(anyRequest, authenticated)
             }
-            .sessionManagement { configurer ->
-                // Não guarda estado entre as requisições dentro da sessão do usuário
-                configurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            // Disable state saves between requests when logged in a user session
+            sessionManagement {
+                sessionCreationPolicy = SessionCreationPolicy.STATELESS
             }
-            .formLogin { configurer ->
-                // Desabilita a interface visual de login no browser
-                configurer.disable()
-            }
-            .httpBasic(withDefaults()) // Tipo da autenticação: basic
-            .build()
+            // Disable login UI when in browser
+            formLogin { disable() }
+            // Use HTTP Basic authentication
+            httpBasic {}
+        }
+
+        return http.build()
     }
 
     @Bean
