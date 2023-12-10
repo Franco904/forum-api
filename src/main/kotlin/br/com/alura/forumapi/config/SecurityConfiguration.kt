@@ -1,5 +1,6 @@
 package br.com.alura.forumapi.config
 
+import br.com.alura.forumapi.security.filter.JwtAuthFilter
 import br.com.alura.forumapi.security.filter.JwtLoginFilter
 import br.com.alura.forumapi.security.util.JwtUtil
 import org.springframework.context.annotation.Bean
@@ -30,6 +31,7 @@ class SecurityConfiguration(
 
             // Configure request filters
             addFilterBefore<UsernamePasswordAuthenticationFilter>(JwtLoginFilter(authenticationManager, jwtUtil))
+            addFilterBefore<UsernamePasswordAuthenticationFilter>(JwtAuthFilter(jwtUtil))
 
             // Disable state saves between requests when logged in a user session
             sessionManagement {
