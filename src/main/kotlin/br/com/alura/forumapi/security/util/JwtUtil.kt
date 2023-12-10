@@ -2,7 +2,6 @@ package br.com.alura.forumapi.security.util
 
 import io.jsonwebtoken.JwtBuilder
 import io.jsonwebtoken.JwtParser
-import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -11,12 +10,15 @@ import org.springframework.stereotype.Component
 import java.util.*
 
 @Component
-class JwtUtil {
+class JwtUtil(
+    private val builder: JwtBuilder,
+    private val parser: JwtParser,
+) {
     @Value("\${jwt.secret}")
     private lateinit var secret: String
 
     fun generateToken(username: String): String? {
-        return Jwts.builder()
+        return builder
             .setSubject(username)
             .setExpiration(Date(System.currentTimeMillis().plus(EXPIRATION_IN_MILLIS)))
             .signWith(SignatureAlgorithm.HS256, secret.toByteArray())
@@ -30,7 +32,7 @@ class JwtUtil {
 
     fun getAuthenticationIfTokenIsValid(token: String): Authentication? {
         return try {
-            val parseResult = Jwts.parser().setSigningKey(secret.toByteArray()).parseClaimsJwt(token)
+            val parseResult = parser.setSigningKey(secret.toByteArray()).parseClaimsJwt(token)
             val username = parseResult.body.subject
 
             UsernamePasswordAuthenticationToken(username, null)
