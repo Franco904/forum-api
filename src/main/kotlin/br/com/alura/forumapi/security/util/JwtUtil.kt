@@ -1,4 +1,4 @@
-package br.com.alura.forumapi.config.util
+package br.com.alura.forumapi.security.util
 
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
