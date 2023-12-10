@@ -17,7 +17,7 @@ class SecurityConfiguration {
         http {
             authorizeHttpRequests {
                 // Define roles for each endpoint
-                authorize("/topics", hasAuthority("READ_WRITE"))
+                authorize("/login", permitAll)
 
                 // Only accept requests sent by authenticated users
                 authorize(anyRequest, authenticated)
