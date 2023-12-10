@@ -35,10 +35,6 @@ class SecurityConfiguration(
             sessionManagement {
                 sessionCreationPolicy = SessionCreationPolicy.STATELESS
             }
-            // Disable login UI when in browser
-            formLogin { disable() }
-            // Use HTTP Basic authentication
-            httpBasic {}
         }
 
         return http.build()
