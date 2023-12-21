@@ -15,11 +15,16 @@ class JwtAuthFilter(
         response: HttpServletResponse,
         filterChain: FilterChain,
     ) {
-        val rawToken = request.getHeader(JwtUtil.AUTH_HEADER) ?: return
-        val token = jwtUtil.getTokenDetail(rawToken)
+        val authorizationHeaderPayload = request.getHeader(JwtUtil.AUTHORIZATION_HEADER)
 
-        jwtUtil.getAuthenticationIfTokenIsValid(token)?.let { authentication ->
-            SecurityContextHolder.getContext().authentication = authentication
+        authorizationHeaderPayload?.let { headerPayload ->
+            val token = jwtUtil.getTokenDetail(headerPayload)
+
+            // If token is valid, user will remain authenticated & logged
+            val auth = jwtUtil.getAuthenticationIfTokenIsValid(token)
+            auth?.let {
+                SecurityContextHolder.getContext().authentication = it
+            }
         }
 
         filterChain.doFilter(request, response)

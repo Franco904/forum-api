@@ -1,26 +1,27 @@
 package br.com.alura.forumapi.security.util
 
-import io.jsonwebtoken.JwtBuilder
-import io.jsonwebtoken.JwtParser
+import br.com.alura.forumapi.service.UserService
+import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
+import org.springframework.security.core.GrantedAuthority
 import org.springframework.stereotype.Component
 import java.util.*
 
 @Component
 class JwtUtil(
-    private val builder: JwtBuilder,
-    private val parser: JwtParser,
+    private val userService: UserService,
 ) {
     @Value("\${jwt.secret}")
     private lateinit var secret: String
 
-    fun generateToken(username: String): String? {
-        return builder
+    fun generateToken(username: String, authorities: MutableCollection<out GrantedAuthority>): String? {
+        return Jwts.builder()
             .setSubject(username)
-            .setExpiration(Date(System.currentTimeMillis().plus(EXPIRATION_IN_MILLIS)))
+            .claim("role", authorities)
+            .setExpiration(Date(System.currentTimeMillis() + EXPIRATION_IN_MILLIS))
             .signWith(SignatureAlgorithm.HS256, secret.toByteArray())
             .compact()
     }
@@ -32,10 +33,12 @@ class JwtUtil(
 
     fun getAuthenticationIfTokenIsValid(token: String): Authentication? {
         return try {
-            val parseResult = parser.setSigningKey(secret.toByteArray()).parseClaimsJwt(token)
-            val username = parseResult.body.subject
+            val parseResult = Jwts.parser().setSigningKey(secret.toByteArray()).parseClaimsJws(token)
 
-            UsernamePasswordAuthenticationToken(username, null)
+            val username = parseResult.body.subject
+            val authorities = userService.loadUserByUsername(username).authorities
+
+            UsernamePasswordAuthenticationToken(username, null, authorities)
         } catch (e: Exception) {
             e.printStackTrace()
             null
@@ -43,7 +46,7 @@ class JwtUtil(
     }
 
     companion object {
-        const val AUTH_HEADER = "Authorization"
+        const val AUTHORIZATION_HEADER = "Authorization"
         const val BEARER_TOKEN_PREFIX = "Bearer "
 
         private const val EXPIRATION_IN_MILLIS: Long = 60000 // 1 min

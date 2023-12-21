@@ -13,7 +13,7 @@ import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 
 class JwtLoginFilter(
-    private val authManager: AuthenticationManager?,
+    private val authManager: AuthenticationManager,
     private val jwtUtil: JwtUtil,
 ) : UsernamePasswordAuthenticationFilter() {
     override fun attemptAuthentication(
@@ -24,18 +24,18 @@ class JwtLoginFilter(
         val (username, password) = ObjectMapper().readValue(requestBody, Credentials::class.java)
 
         val token = UsernamePasswordAuthenticationToken(username, password)
-        return authManager?.authenticate(token)
+        return authManager.authenticate(token)
     }
 
     override fun successfulAuthentication(
-        request: HttpServletRequest?,
-        response: HttpServletResponse?,
-        chain: FilterChain?,
-        authResult: Authentication?,
+        request: HttpServletRequest,
+        response: HttpServletResponse,
+        chain: FilterChain,
+        authResult: Authentication,
     ) {
-        val userDetails = authResult?.principal as UserDetails
+        val userDetails = authResult.principal as UserDetails
 
-        val token = jwtUtil.generateToken(userDetails.username)
-        response?.addHeader(JwtUtil.AUTH_HEADER, "${JwtUtil.BEARER_TOKEN_PREFIX}$token")
+        val token = jwtUtil.generateToken(userDetails.username, userDetails.authorities)
+        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, "${JwtUtil.BEARER_TOKEN_PREFIX}$token")
     }
 }
