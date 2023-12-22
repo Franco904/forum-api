@@ -1,0 +1,9 @@
+CREATE TABLE roles(
+    id INT NOT NULL AUTO_INCREMENT,
+    name VARCHAR(45) NOT NULL,
+    PRIMARY KEY (id)
+);
+
+INSERT INTO roles(id, name) VALUES
+(1, 'READ'),
+(2, 'READ_WRITE');
