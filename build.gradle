@@ -35,7 +35,6 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-cache'
 	implementation 'org.springframework.data:spring-data-jpa'
-	implementation 'com.h2database:h2'
 	implementation 'org.liquibase:liquibase-core'
 	implementation 'io.github.serpro69:kotlin-faker:1.13.0'
 
@@ -63,3 +62,16 @@ tasks.withType(KotlinCompile).configureEach {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+tasks.register("bootRunDev") {
+	group = "application"
+	description = "Runs the Spring Boot application with the dev profile"
+	doFirst {
+		tasks.bootRun.configure {
+			systemProperty "spring.profiles.active", "dev"
+		}
+	}
+	finalizedBy "bootRun"
+}
+
+apply from: rootProject.file('gradle/profile/profiles.gradle');
