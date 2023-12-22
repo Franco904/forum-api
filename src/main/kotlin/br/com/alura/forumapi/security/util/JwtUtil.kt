@@ -21,6 +21,7 @@ class JwtUtil(
         return Jwts.builder()
             .setSubject(username)
             .claim("role", authorities)
+            .setIssuedAt(Date(System.currentTimeMillis()))
             .setExpiration(Date(System.currentTimeMillis() + EXPIRATION_IN_MILLIS))
             .signWith(SignatureAlgorithm.HS256, secret.toByteArray())
             .compact()
