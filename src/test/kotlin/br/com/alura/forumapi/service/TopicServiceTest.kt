@@ -1,31 +1,37 @@
 package br.com.alura.forumapi.service
 
 import br.com.alura.forumapi.domain.dto.topic.GetTopicDto
+import br.com.alura.forumapi.domain.model.Topic
 import br.com.alura.forumapi.domain.repository.CourseRepository
 import br.com.alura.forumapi.domain.repository.TopicRepository
 import br.com.alura.forumapi.domain.repository.UserRepository
 import br.com.alura.forumapi.exception.classes.NotFoundException
+import br.com.alura.forumapi.util.Clock
+import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import org.amshove.kluent.invoking
 import org.amshove.kluent.shouldBeEqualTo
 import org.amshove.kluent.shouldThrow
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
 import test_utils.faker.faker
+import test_utils.faker.model.DtoFaker
 import test_utils.faker.model.EntityFaker
+import java.time.LocalDateTime
 import java.util.*
 
 class TopicServiceTest {
-    val topicRepository: TopicRepository = mockk()
-    val courseRepository: CourseRepository = mockk()
-    val userRepository: UserRepository = mockk()
+    val topicRepository: TopicRepository = mockk(relaxed = true)
+    val courseRepository: CourseRepository = mockk(relaxed = true)
+    val userRepository: UserRepository = mockk(relaxed = true)
 
-    val pageable: Pageable = mockk()
+    val pageable: Pageable = mockk(relaxed = true)
 
     val sut = TopicService(
         topicRepository,
@@ -36,6 +42,7 @@ class TopicServiceTest {
     @BeforeEach
     fun setUp() {
         Clock.setNowForTesting(LocalDateTime.now())
+        clearAllMocks()
     }
 
     @Nested
@@ -102,14 +109,64 @@ class TopicServiceTest {
     inner class CreateTest {
         @Test
         fun `Deve criar um topico no banco de dados com os dados corretos e retornar os dados corretos`() {
+            val course = EntityFaker.createCourse()
+            val user = EntityFaker.createUser()
+
+            every { courseRepository.findById(course.id!!) }.returns(Optional.of(course))
+            every { userRepository.findById(user.id!!) }.returns(Optional.of(user))
+
+            val postTopicDto = DtoFaker.createPostTopicDto(
+                courseId = course.id,
+                userId = user.id,
+            )
+
+            val topic = Topic(
+                title = postTopicDto.title,
+                message = postTopicDto.message,
+                course = course,
+                user = user,
+            )
+
+            every { topicRepository.save(topic) }.returns(topic)
+
+            val resultTopic = sut.create(postTopicDto)
+
+            verify(exactly = 1) { topicRepository.save(topic) }
+            resultTopic.shouldBeEqualTo(GetTopicDto.fromTopic(topic))
         }
 
         @Test
         fun `Deve lancar uma excecao se nao existir registrado um curso registrado para o id informado`() {
+            val course = EntityFaker.createCourse()
+            val user = EntityFaker.createUser()
+
+            every { courseRepository.findById(course.id!!) }.returns(Optional.empty())
+            every { userRepository.findById(user.id!!) }.returns(Optional.of(user))
+
+            val postTopicDto = DtoFaker.createPostTopicDto(
+                courseId = course.id,
+                userId = user.id,
+            )
+
+            invoking { sut.create(postTopicDto) }.shouldThrow(NotFoundException("Course not found!"))
+            verify(exactly = 0) { topicRepository.save(any<Topic>()) }
         }
 
         @Test
         fun `Deve lancar uma excecao se nao existir registrado um usuario registrado para o id informado`() {
+            val course = EntityFaker.createCourse()
+            val user = EntityFaker.createUser()
+
+            every { courseRepository.findById(course.id!!) }.returns(Optional.of(course))
+            every { userRepository.findById(user.id!!) }.returns(Optional.empty())
+
+            val postTopicDto = DtoFaker.createPostTopicDto(
+                courseId = course.id,
+                userId = user.id,
+            )
+
+            invoking { sut.create(postTopicDto) }.shouldThrow(NotFoundException("User not found!"))
+            verify(exactly = 0) { topicRepository.save(any<Topic>()) }
         }
     }
 
