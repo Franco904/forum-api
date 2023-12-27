@@ -10,6 +10,7 @@ data class GetTopicDto(
     val message: String,
     val status: StatusTopic,
     val creationDate: LocalDateTime,
+    val updateDate: LocalDateTime,
 ) {
     companion object {
         fun fromTopic(topic: Topic): GetTopicDto {
@@ -19,6 +20,7 @@ data class GetTopicDto(
                 message = topic.message,
                 status = topic.status,
                 creationDate = topic.creationDate,
+                updateDate = topic.updateDate,
             )
         }
     }

@@ -10,6 +10,7 @@ import jakarta.transaction.Transactional
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
+import java.time.LocalDateTime
 
 @Service
 class TopicService(
@@ -53,7 +54,11 @@ class TopicService(
     @Transactional
     fun update(dto: PutTopicDto): GetTopicDto {
         val topic = topicRepository.findById(dto.id).orElseThrow { NotFoundException("Topic not found!") }
-        val topicUpdated = topic.copyWith(dto.title, dto.message)
+        val topicUpdated = topic.copyWith(
+            dto.title,
+            dto.message,
+            updateDate = LocalDateTime.now(),
+        )
 
         topicRepository.save(topicUpdated)
 

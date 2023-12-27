@@ -11,6 +11,7 @@ data class Topic(
     val title: String,
     val message: String,
     val creationDate: LocalDateTime = LocalDateTime.now(),
+    var updateDate: LocalDateTime = creationDate,
     @ManyToOne
     val course: Course,
     @ManyToOne
@@ -24,6 +25,7 @@ data class Topic(
         title: String? = null,
         message: String? = null,
         creationDate: LocalDateTime? = null,
+        updateDate: LocalDateTime? = null,
         course: Course? = null,
         user: User? = null,
         status: StatusTopic? = null,
@@ -34,6 +36,7 @@ data class Topic(
             title = title ?: this.title,
             message = message ?: this.message,
             creationDate = creationDate ?: this.creationDate,
+            updateDate = updateDate ?: this.updateDate,
             course = course ?: this.course,
             user = user ?: this.user,
             status = status ?: this.status,
