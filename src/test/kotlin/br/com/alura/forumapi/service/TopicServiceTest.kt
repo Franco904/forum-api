@@ -1,19 +1,66 @@
 package br.com.alura.forumapi.service
 
+import br.com.alura.forumapi.domain.dto.topic.GetTopicDto
+import br.com.alura.forumapi.domain.repository.CourseRepository
+import br.com.alura.forumapi.domain.repository.TopicRepository
+import br.com.alura.forumapi.domain.repository.UserRepository
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.verify
+import org.amshove.kluent.shouldBeEqualTo
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.springframework.data.domain.PageImpl
+import org.springframework.data.domain.Pageable
+import test_utils.faker.faker
+import test_utils.faker.model.EntityFaker
 
 class TopicServiceTest {
+    val topicRepository: TopicRepository = mockk()
+    val courseRepository: CourseRepository = mockk()
+    val userRepository: UserRepository = mockk()
+
+    val pageable: Pageable = mockk()
+
+    val sut = TopicService(
+        topicRepository,
+        courseRepository,
+        userRepository,
+    )
+
     @Nested
     @DisplayName("findAll")
     inner class FindAllTest {
         @Test
         fun `Deve retornar uma lista de topicos com os dados corretos dos topicos recuperados pelo nome curso se informado`() {
+            val courseName = "Kotlin"
+            val topic1 = EntityFaker.createTopic()
+            val topic2 = EntityFaker.createTopic()
+            val topic3 = EntityFaker.createTopic()
+            val topicList = listOf(topic1, topic2, topic3)
+
+            every { topicRepository.findByCourseName(courseName, pageable) }.returns(PageImpl(topicList))
+
+            val topics = sut.findAll(courseName, pageable)
+
+            topics.content.shouldBeEqualTo(topicList.map { GetTopicDto.fromTopic(topic = it) })
+            verify(exactly = 0) { topicRepository.findAll(any<Pageable>()) }
         }
 
         @Test
-        fun `Deve retornar uma lista de topicos GetTopicDto com os tópicos recuperados sem filtros se o nome do curso nao for informado`() {
+        fun `Deve retornar uma lista de topicos com os tópicos recuperados sem filtros se o nome do curso nao for informado`() {
+            val topic1 = EntityFaker.createTopic()
+            val topic2 = EntityFaker.createTopic()
+            val topic3 = EntityFaker.createTopic()
+            val topicList = listOf(topic1, topic2, topic3)
+
+            every { topicRepository.findAll(pageable) }.returns(PageImpl(topicList))
+
+            val topics = sut.findAll(paging = pageable)
+
+            topics.content.shouldBeEqualTo(topicList.map { GetTopicDto.fromTopic(topic = it) })
+            verify(exactly = 0) { topicRepository.findByCourseName(any<String>(), any<Pageable>()) }
         }
     }
 

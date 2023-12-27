@@ -19,7 +19,7 @@ class TopicService(
     private val userRepository: UserRepository,
 ) {
     fun findAll(
-        courseName: String?,
+        courseName: String? = null,
         paging: Pageable,
     ): Page<GetTopicDto> {
         val topics = courseName?.let {
