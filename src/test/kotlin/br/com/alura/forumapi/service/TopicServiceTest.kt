@@ -175,10 +175,31 @@ class TopicServiceTest {
     inner class UpdateTest {
         @Test
         fun `Deve atualizar um topico no banco de dados com os dados corretos e retornar os dados corretos`() {
+            val topic = EntityFaker.createTopic()
+            every { topicRepository.findById(topic.id!!) }.returns(Optional.of(topic))
+
+            val putTopicDto = DtoFaker.createPutTopicDto(id = topic.id)
+            val topicUpdated = topic.copyWith(
+                title = putTopicDto.title,
+                message = putTopicDto.message,
+                updateDate = Clock.now(),
+            )
+
+            every { topicRepository.save(topicUpdated) }.returns(topicUpdated)
+
+            val resultTopic = sut.update(putTopicDto)
+            resultTopic.shouldBeEqualTo(GetTopicDto.fromTopic(topicUpdated))
         }
 
         @Test
         fun `Deve lancar uma excecao se nao existir um topico registrado para o id informado`() {
+            val topic = EntityFaker.createTopic()
+            every { topicRepository.findById(topic.id!!) }.returns(Optional.empty())
+
+            val putTopicDto = DtoFaker.createPutTopicDto(id = topic.id)
+
+            invoking { sut.update(putTopicDto) }.shouldThrow(NotFoundException("Topic not found!"))
+            verify(exactly = 0) { topicRepository.save(any<Topic>()) }
         }
     }
 
