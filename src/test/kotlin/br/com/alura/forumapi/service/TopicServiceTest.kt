@@ -4,10 +4,13 @@ import br.com.alura.forumapi.domain.dto.topic.GetTopicDto
 import br.com.alura.forumapi.domain.repository.CourseRepository
 import br.com.alura.forumapi.domain.repository.TopicRepository
 import br.com.alura.forumapi.domain.repository.UserRepository
+import br.com.alura.forumapi.exception.classes.NotFoundException
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import org.amshove.kluent.invoking
 import org.amshove.kluent.shouldBeEqualTo
+import org.amshove.kluent.shouldThrow
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -15,6 +18,7 @@ import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
 import test_utils.faker.faker
 import test_utils.faker.model.EntityFaker
+import java.util.*
 
 class TopicServiceTest {
     val topicRepository: TopicRepository = mockk()
@@ -69,10 +73,22 @@ class TopicServiceTest {
     inner class FindByIdTest {
         @Test
         fun `Deve retornar um topico a partir do id informado se ele estiver registrado no banco de dados`() {
+            val id = faker.random.nextLong()
+            val topic = EntityFaker.createTopic(id = id)
+
+            every { topicRepository.findById(id) }.returns(Optional.of(topic))
+
+            val resultTopic = sut.findById(id)
+            resultTopic.shouldBeEqualTo(GetTopicDto.fromTopic(topic))
         }
 
         @Test
         fun `Deve lancar uma excecao se nao existir um topico registrado para o id informado`() {
+            val id = faker.random.nextLong()
+
+            every { topicRepository.findById(id) }.returns(Optional.empty())
+
+            invoking { sut.findById(id) }.shouldThrow(NotFoundException("Topic not found!"))
         }
     }
 
