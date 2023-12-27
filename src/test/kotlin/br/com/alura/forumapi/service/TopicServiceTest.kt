@@ -33,6 +33,11 @@ class TopicServiceTest {
         userRepository,
     )
 
+    @BeforeEach
+    fun setUp() {
+        Clock.setNowForTesting(LocalDateTime.now())
+    }
+
     @Nested
     @DisplayName("findAll")
     inner class FindAllTest {

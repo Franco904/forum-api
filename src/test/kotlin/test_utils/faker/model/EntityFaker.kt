@@ -27,7 +27,7 @@ object EntityFaker {
         answers = answers ?: mutableListOf(),
     )
 
-    private fun createCourse(
+    fun createCourse(
         id: Long? = null,
         name: String? = null,
         category: String? = null,
@@ -37,7 +37,7 @@ object EntityFaker {
         category = category ?: faker.random.randomString(30),
     )
 
-    private fun createUser(
+    fun createUser(
         id: Long? = null,
         name: String? = null,
         email: String? = null,

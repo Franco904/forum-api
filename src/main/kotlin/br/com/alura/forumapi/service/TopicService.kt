@@ -6,6 +6,7 @@ import br.com.alura.forumapi.domain.repository.CourseRepository
 import br.com.alura.forumapi.domain.repository.TopicRepository
 import br.com.alura.forumapi.domain.repository.UserRepository
 import br.com.alura.forumapi.exception.classes.NotFoundException
+import br.com.alura.forumapi.util.Clock
 import jakarta.transaction.Transactional
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -58,7 +59,7 @@ class TopicService(
         val topicUpdated = topic.copyWith(
             dto.title,
             dto.message,
-            updateDate = LocalDateTime.now(),
+            updateDate = Clock.now(),
         )
 
         topicRepository.save(topicUpdated)
