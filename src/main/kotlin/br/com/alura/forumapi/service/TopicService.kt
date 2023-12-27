@@ -54,6 +54,7 @@ class TopicService(
     @Transactional
     fun update(dto: PutTopicDto): GetTopicDto {
         val topic = topicRepository.findById(dto.id).orElseThrow { NotFoundException("Topic not found!") }
+
         val topicUpdated = topic.copyWith(
             dto.title,
             dto.message,
@@ -61,7 +62,6 @@ class TopicService(
         )
 
         topicRepository.save(topicUpdated)
-
         return GetTopicDto.fromTopic(topicUpdated)
     }
 
