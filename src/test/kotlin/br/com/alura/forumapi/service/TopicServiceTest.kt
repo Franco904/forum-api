@@ -210,10 +210,23 @@ class TopicServiceTest {
     inner class RemoveTest {
         @Test
         fun `Deve remover um topico no banco de dados e retornar o id do topico`() {
+            val topic = EntityFaker.createTopic()
+            every { topicRepository.findById(topic.id!!) }.returns(Optional.of(topic))
+
+            val id = sut.remove(topic.id!!)
+
+            verify(exactly = 1) { topicRepository.delete(topic) }
+            id.shouldBeEqualTo(topic.id)
         }
 
         @Test
         fun `Deve lancar uma excecao se nao existir um topico registrado para o id informado`() {
+            val id = faker.random.nextLong()
+            every { topicRepository.findById(id) }.returns(Optional.empty())
+
+            invoking { sut.remove(id) }.shouldThrow(NotFoundException("Topic not found!"))
+
+            verify(exactly = 0) { topicRepository.delete(any<Topic>()) }
         }
     }
 
