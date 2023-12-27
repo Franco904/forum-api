@@ -188,6 +188,8 @@ class TopicServiceTest {
             every { topicRepository.save(topicUpdated) }.returns(topicUpdated)
 
             val resultTopic = sut.update(putTopicDto)
+
+            verify(exactly = 1) { topicRepository.save(topicUpdated) }
             resultTopic.shouldBeEqualTo(GetTopicDto.fromTopic(topicUpdated))
         }
 
