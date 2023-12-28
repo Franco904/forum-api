@@ -1,5 +1,6 @@
 package br.com.alura.forumapi.service
 
+import br.com.alura.forumapi.domain.dto.topic.GetTopicCountByCategoryDto
 import br.com.alura.forumapi.domain.dto.topic.GetTopicDto
 import br.com.alura.forumapi.domain.dto.topic.GetTopicsByCategoryDto
 import br.com.alura.forumapi.domain.model.Topic
@@ -262,6 +263,17 @@ class TopicServiceTest {
     inner class ReportCountByCategoryTest {
         @Test
         fun `Deve retornar uma lista da contagem de topicos por categoria`() {
+            val topicCountByCategory = listOf(
+                GetTopicCountByCategoryDto(category = "Kotlin", topicCount = 2),
+                GetTopicCountByCategoryDto(category = "Android", topicCount = 1),
+                GetTopicCountByCategoryDto(category = "Flutter", topicCount = 1),
+            )
+
+            every { topicRepository.findCountByCourseCategory() }.returns(topicCountByCategory)
+
+            val result = sut.reportCountByCategory()
+
+            result.shouldBeEqualTo(topicCountByCategory)
         }
     }
 }
