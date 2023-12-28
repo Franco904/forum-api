@@ -273,6 +273,7 @@ class TopicServiceTest {
 
             val result = sut.reportCountByCategory()
 
+            verify(exactly = 1) { topicRepository.findCountByCourseCategory() }
             result.shouldBeEqualTo(topicCountByCategory)
         }
     }
