@@ -1,6 +1,7 @@
 package br.com.alura.forumapi.service
 
 import br.com.alura.forumapi.domain.dto.topic.GetTopicDto
+import br.com.alura.forumapi.domain.dto.topic.GetTopicsByCategoryDto
 import br.com.alura.forumapi.domain.model.Topic
 import br.com.alura.forumapi.domain.repository.CourseRepository
 import br.com.alura.forumapi.domain.repository.TopicRepository
@@ -65,7 +66,7 @@ class TopicServiceTest {
         }
 
         @Test
-        fun `Deve retornar uma lista de topicos com os tópicos recuperados sem filtros se o nome do curso nao for informado`() {
+        fun `Deve retornar uma lista de topicos com os topicos recuperados sem filtros se o nome do curso nao for informado`() {
             val topic1 = EntityFaker.createTopic()
             val topic2 = EntityFaker.createTopic()
             val topic3 = EntityFaker.createTopic()
@@ -235,6 +236,24 @@ class TopicServiceTest {
     inner class ReportByCategoryTest {
         @Test
         fun `Deve retornar uma lista de topicos agrupados por categoria`() {
+            val topics = listOf(
+                EntityFaker.createTopic(id = 1, course = EntityFaker.createCourse(category = "Kotlin")),
+                EntityFaker.createTopic(id = 2, course = EntityFaker.createCourse(category = "Android")),
+                EntityFaker.createTopic(id = 3, course = EntityFaker.createCourse(category = "Flutter")),
+                EntityFaker.createTopic(id = 4, course = EntityFaker.createCourse(category = "Kotlin")),
+            )
+
+            val dtos = topics.map { topic -> GetTopicDto.fromTopic(topic) }
+
+            every { topicRepository.findAll() }.returns(topics)
+
+            val topicsGrouped = sut.reportByCategory()
+
+            topicsGrouped.shouldBeEqualTo(listOf(
+                GetTopicsByCategoryDto(category = "Kotlin", topics = listOf(dtos[0], dtos[3])),
+                GetTopicsByCategoryDto(category = "Android", topics = listOf(dtos[1])),
+                GetTopicsByCategoryDto(category = "Flutter", topics = listOf(dtos[2])),
+            ))
         }
     }
 
