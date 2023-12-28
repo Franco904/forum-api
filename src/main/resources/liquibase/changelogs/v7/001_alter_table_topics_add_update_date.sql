@@ -1,0 +1,2 @@
+ALTER TABLE topics
+ADD COLUMN update_date DATETIME NOT NULL;
