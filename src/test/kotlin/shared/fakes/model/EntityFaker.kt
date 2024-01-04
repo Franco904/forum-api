@@ -51,7 +51,7 @@ object EntityFaker {
         roles = roles ?: mutableListOf(createRole()),
     )
 
-    fun createRole(
+    private fun createRole(
         id: Long? = null,
         name: String? = null,
     ) = Role(

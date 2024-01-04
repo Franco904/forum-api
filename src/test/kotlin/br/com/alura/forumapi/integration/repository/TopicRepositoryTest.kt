@@ -46,7 +46,7 @@ class TopicRepositoryTest {
     companion object {
         @Container
         private val mysqlContainer = MySQLContainer<Nothing>("mysql:latest").apply {
-            withDatabaseName("forum-api-db-test")
+            withDatabaseName("forum-test")
             withUsername("test")
             withPassword("123123as")
         }
