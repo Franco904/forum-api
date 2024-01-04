@@ -10,8 +10,8 @@ import org.springframework.security.core.GrantedAuthority
 data class Role(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private val id: Long? = null,
-    private val name: String,
+    val id: Long? = null,
+    val name: String,
 ) : GrantedAuthority {
     override fun getAuthority(): String = name
 
