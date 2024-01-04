@@ -6,6 +6,6 @@ CREATE TABLE answers(
     topic_id INT NOT NULL,
     has_solved_topic BOOLEAN NOT NULL,
     PRIMARY KEY(id),
-    FOREIGN KEY(user_id) REFERENCES users(id),
-    FOREIGN KEY(topic_id) REFERENCES topics(id)
+    FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY(topic_id) REFERENCES topics(id) ON DELETE CASCADE
 );
