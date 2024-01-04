@@ -1,7 +1,7 @@
-package shared.fakes.faker.model
+package shared.fakes.model
 
 import br.com.alura.forumapi.domain.model.*
-import shared.fakes.faker.faker
+import shared.fakes.faker
 import java.time.LocalDateTime
 
 object EntityFaker {
@@ -51,7 +51,7 @@ object EntityFaker {
         roles = roles ?: mutableListOf(createRole()),
     )
 
-    private fun createRole(
+    fun createRole(
         id: Long? = null,
         name: String? = null,
     ) = Role(
