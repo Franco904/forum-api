@@ -1,8 +1,8 @@
-package test_utils.faker.model
+package shared.fakes.faker.model
 
 import br.com.alura.forumapi.domain.dto.topic.PostTopicDto
 import br.com.alura.forumapi.domain.dto.topic.PutTopicDto
-import test_utils.faker.faker
+import shared.fakes.faker.faker
 
 object DtoFaker {
     fun createPostTopicDto(

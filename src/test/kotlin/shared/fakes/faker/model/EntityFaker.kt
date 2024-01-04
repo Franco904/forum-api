@@ -1,7 +1,7 @@
-package test_utils.faker.model
+package shared.fakes.faker.model
 
 import br.com.alura.forumapi.domain.model.*
-import test_utils.faker.faker
+import shared.fakes.faker.faker
 import java.time.LocalDateTime
 
 object EntityFaker {

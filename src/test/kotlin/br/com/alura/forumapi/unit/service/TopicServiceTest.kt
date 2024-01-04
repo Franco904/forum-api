@@ -1,4 +1,4 @@
-package br.com.alura.forumapi.service
+package br.com.alura.forumapi.unit.service
 
 import br.com.alura.forumapi.domain.dto.topic.GetTopicCountByCategoryDto
 import br.com.alura.forumapi.domain.dto.topic.GetTopicDto
@@ -8,6 +8,7 @@ import br.com.alura.forumapi.domain.repository.CourseRepository
 import br.com.alura.forumapi.domain.repository.TopicRepository
 import br.com.alura.forumapi.domain.repository.UserRepository
 import br.com.alura.forumapi.exception.classes.NotFoundException
+import br.com.alura.forumapi.service.TopicService
 import br.com.alura.forumapi.util.Clock
 import io.mockk.clearAllMocks
 import io.mockk.every
@@ -22,9 +23,9 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
-import test_utils.faker.faker
-import test_utils.faker.model.DtoFaker
-import test_utils.faker.model.EntityFaker
+import shared.fakes.faker.faker
+import shared.fakes.faker.model.DtoFaker
+import shared.fakes.faker.model.EntityFaker
 import java.time.LocalDateTime
 import java.util.*
 

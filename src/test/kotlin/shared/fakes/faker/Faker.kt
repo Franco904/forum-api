@@ -1,4 +1,4 @@
-package test_utils.faker
+package shared.fakes.faker
 
 import io.github.serpro69.kfaker.Faker
 
