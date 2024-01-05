@@ -47,6 +47,9 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'io.jsonwebtoken:jjwt:0.2'
 
+	// Documentation
+	implementation 'org.springdoc:springdoc-openapi-ui:1.7.0'
+
 	// Helper
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 

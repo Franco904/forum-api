@@ -5,6 +5,7 @@ import br.com.alura.forumapi.security.filter.JwtLoginFilter
 import br.com.alura.forumapi.security.util.JwtUtil
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.HttpMethod
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration
 import org.springframework.security.config.annotation.web.HttpSecurityDsl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
@@ -26,7 +27,11 @@ class SecurityConfiguration(
         http {
             authorizeHttpRequests {
                 // Set authorities (user roles) for each endpoint
-                authorize("/login", permitAll)
+                authorize(HttpMethod.POST, "/login", permitAll)
+                authorize(HttpMethod.GET, "/swagger-ui/**", permitAll)
+                authorize(HttpMethod.GET, "/v3/api-docs/**", permitAll)
+
+                // Domain endpoints
                 authorize("/topics", hasAuthority("READ_WRITE"))
 
                 // Only accept requests sent by authenticated users

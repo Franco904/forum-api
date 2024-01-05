@@ -2,6 +2,7 @@ package br.com.alura.forumapi.controller
 
 import br.com.alura.forumapi.domain.dto.topic.*
 import br.com.alura.forumapi.service.TopicService
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import jakarta.validation.Valid
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -11,6 +12,7 @@ import org.springframework.web.util.UriComponentsBuilder
 
 @RestController
 @RequestMapping("/topics")
+@SecurityRequirement(name = "Bearer Auth")
 class TopicController(
     private val topicService: TopicService,
 ) {
