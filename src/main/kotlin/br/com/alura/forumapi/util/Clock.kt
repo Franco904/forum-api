@@ -5,9 +5,11 @@ import java.time.LocalDateTime
 object Clock {
     private var now: LocalDateTime? = null
 
-    fun now(): LocalDateTime = now ?: LocalDateTime.now()
+    fun now(): LocalDateTime {
+        return now ?: LocalDateTime.parse(LocalDateTime.now().format(formatter))
+    }
 
     fun setNowForTesting(date: LocalDateTime) {
-        now = date
+        now = LocalDateTime.parse(date.format(formatter))
     }
 }

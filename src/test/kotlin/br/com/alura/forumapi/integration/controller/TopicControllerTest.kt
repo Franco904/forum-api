@@ -5,8 +5,8 @@ import br.com.alura.forumapi.domain.model.Course
 import br.com.alura.forumapi.domain.model.Role
 import br.com.alura.forumapi.domain.model.User
 import br.com.alura.forumapi.domain.repository.TopicRepository
-import br.com.alura.forumapi.domain.repository.UserRepository
 import br.com.alura.forumapi.security.util.JwtUtil
+import br.com.alura.forumapi.util.Clock
 import org.amshove.kluent.shouldBeEqualTo
 import org.amshove.kluent.shouldBeTrue
 import org.junit.jupiter.api.BeforeEach
@@ -29,12 +29,13 @@ import org.springframework.web.context.WebApplicationContext
 import org.testcontainers.containers.MySQLContainer
 import org.testcontainers.junit.jupiter.Container
 import org.testcontainers.junit.jupiter.Testcontainers
-import shared.fake.model.EntityFaker
 import shared.fake.model.UserRole
+import shared.fake.model.createTopic
 import shared.util.jpa.clearAllTables
 import shared.util.jpa.populateDomainTables
 import shared.util.rest.PageResponse
 import shared.util.rest.contentSubstring
+import java.time.LocalDateTime
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Testcontainers
@@ -52,9 +53,6 @@ class TopicControllerTest {
 
     @Autowired
     private lateinit var topicRepository: TopicRepository
-
-    @Autowired
-    private lateinit var userRepository: UserRepository
 
     @Autowired
     private lateinit var jdbcTemplate: JdbcTemplate
@@ -98,6 +96,8 @@ class TopicControllerTest {
 
     @BeforeEach
     fun setUp() {
+        Clock.setNowForTesting(LocalDateTime.now())
+
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).apply<DefaultMockMvcBuilder>(
             SecurityMockMvcConfigurers.springSecurity(),
         ).build()
@@ -134,8 +134,8 @@ class TopicControllerTest {
 
         @Test
         fun `Deve retornar todos os topicos cadastrados no banco de dados`() {
-            val topic1 = EntityFaker.createTopic(course = courses[0], user = users.first())
-            val topic2 = EntityFaker.createTopic(course = courses[1], user = users.first())
+            val topic1 = createTopic(course = courses[0], user = users.first())
+            val topic2 = createTopic(course = courses[1], user = users.first())
 
             topicRepository.save(topic1)
             topicRepository.save(topic2)
@@ -165,8 +165,9 @@ class TopicControllerTest {
 
         @Test
         fun `Deve retornar todos os topicos cadastrados no banco de dados com o nome de curso informado`() {
-            val topic1 = EntityFaker.createTopic(course = courses[0], user = users.first())
-            val topic2 = EntityFaker.createTopic(course = courses[1], user = users.first())
+            Clock.setNowForTesting(LocalDateTime.now())
+            val topic1 = createTopic(course = courses[0], user = users.first())
+            val topic2 = createTopic(course = courses[1], user = users.first())
 
             topicRepository.save(topic1)
             topicRepository.save(topic2)

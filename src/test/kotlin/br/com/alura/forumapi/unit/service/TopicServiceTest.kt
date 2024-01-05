@@ -24,8 +24,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
 import shared.fake.faker
-import shared.fake.model.DtoFaker
-import shared.fake.model.EntityFaker
+import shared.fake.model.*
 import java.time.LocalDateTime
 import java.util.*
 
@@ -54,9 +53,9 @@ class TopicServiceTest {
         @Test
         fun `Deve retornar uma lista de topicos com os dados corretos dos topicos recuperados pelo nome curso se informado`() {
             val courseName = "Kotlin"
-            val topic1 = EntityFaker.createTopic()
-            val topic2 = EntityFaker.createTopic()
-            val topic3 = EntityFaker.createTopic()
+            val topic1 = createTopic()
+            val topic2 = createTopic()
+            val topic3 = createTopic()
             val topicList = listOf(topic1, topic2, topic3)
 
             every { topicRepository.findByCourseName(courseName, pageable) }.returns(PageImpl(topicList))
@@ -69,9 +68,9 @@ class TopicServiceTest {
 
         @Test
         fun `Deve retornar uma lista de topicos com os topicos recuperados sem filtros se o nome do curso nao for informado`() {
-            val topic1 = EntityFaker.createTopic()
-            val topic2 = EntityFaker.createTopic()
-            val topic3 = EntityFaker.createTopic()
+            val topic1 = createTopic()
+            val topic2 = createTopic()
+            val topic3 = createTopic()
             val topicList = listOf(topic1, topic2, topic3)
 
             every { topicRepository.findAll(pageable) }.returns(PageImpl(topicList))
@@ -89,7 +88,7 @@ class TopicServiceTest {
         @Test
         fun `Deve retornar um topico a partir do id informado se ele estiver registrado no banco de dados`() {
             val id = faker.random.nextLong()
-            val topic = EntityFaker.createTopic(id = id)
+            val topic = createTopic(id = id)
 
             every { topicRepository.findById(id) }.returns(Optional.of(topic))
 
@@ -112,13 +111,13 @@ class TopicServiceTest {
     inner class CreateTest {
         @Test
         fun `Deve criar um topico no banco de dados com os dados corretos e retornar os dados corretos`() {
-            val course = EntityFaker.createCourse()
-            val user = EntityFaker.createUser()
+            val course = createCourse()
+            val user = createUser()
 
             every { courseRepository.findById(course.id!!) }.returns(Optional.of(course))
             every { userRepository.findById(user.id!!) }.returns(Optional.of(user))
 
-            val postTopicDto = DtoFaker.createPostTopicDto(
+            val postTopicDto = createPostTopicDto(
                 courseId = course.id,
                 userId = user.id,
             )
@@ -140,13 +139,13 @@ class TopicServiceTest {
 
         @Test
         fun `Deve lancar uma excecao se nao existir registrado um curso registrado para o id informado`() {
-            val course = EntityFaker.createCourse()
-            val user = EntityFaker.createUser()
+            val course = createCourse()
+            val user = createUser()
 
             every { courseRepository.findById(course.id!!) }.returns(Optional.empty())
             every { userRepository.findById(user.id!!) }.returns(Optional.of(user))
 
-            val postTopicDto = DtoFaker.createPostTopicDto(
+            val postTopicDto = createPostTopicDto(
                 courseId = course.id,
                 userId = user.id,
             )
@@ -157,13 +156,13 @@ class TopicServiceTest {
 
         @Test
         fun `Deve lancar uma excecao se nao existir registrado um usuario registrado para o id informado`() {
-            val course = EntityFaker.createCourse()
-            val user = EntityFaker.createUser()
+            val course = createCourse()
+            val user = createUser()
 
             every { courseRepository.findById(course.id!!) }.returns(Optional.of(course))
             every { userRepository.findById(user.id!!) }.returns(Optional.empty())
 
-            val postTopicDto = DtoFaker.createPostTopicDto(
+            val postTopicDto = createPostTopicDto(
                 courseId = course.id,
                 userId = user.id,
             )
@@ -178,10 +177,10 @@ class TopicServiceTest {
     inner class UpdateTest {
         @Test
         fun `Deve atualizar um topico no banco de dados com os dados corretos e retornar os dados corretos`() {
-            val topic = EntityFaker.createTopic()
+            val topic = createTopic()
             every { topicRepository.findById(topic.id!!) }.returns(Optional.of(topic))
 
-            val putTopicDto = DtoFaker.createPutTopicDto(id = topic.id)
+            val putTopicDto = createPutTopicDto(id = topic.id)
             val topicUpdated = topic.copyWith(
                 title = putTopicDto.title,
                 message = putTopicDto.message,
@@ -198,10 +197,10 @@ class TopicServiceTest {
 
         @Test
         fun `Deve lancar uma excecao se nao existir um topico registrado para o id informado`() {
-            val topic = EntityFaker.createTopic()
+            val topic = createTopic()
             every { topicRepository.findById(topic.id!!) }.returns(Optional.empty())
 
-            val putTopicDto = DtoFaker.createPutTopicDto(id = topic.id)
+            val putTopicDto = createPutTopicDto(id = topic.id)
 
             invoking { sut.update(putTopicDto) }.shouldThrow(NotFoundException("Topic not found!"))
             verify(exactly = 0) { topicRepository.save(any<Topic>()) }
@@ -213,7 +212,7 @@ class TopicServiceTest {
     inner class RemoveTest {
         @Test
         fun `Deve remover um topico no banco de dados e retornar o id do topico`() {
-            val topic = EntityFaker.createTopic()
+            val topic = createTopic()
             every { topicRepository.findById(topic.id!!) }.returns(Optional.of(topic))
 
             val id = sut.remove(topic.id!!)
@@ -239,10 +238,10 @@ class TopicServiceTest {
         @Test
         fun `Deve retornar uma lista de topicos agrupados por categoria`() {
             val topics = listOf(
-                EntityFaker.createTopic(id = 1, course = EntityFaker.createCourse(category = "Kotlin")),
-                EntityFaker.createTopic(id = 2, course = EntityFaker.createCourse(category = "Android")),
-                EntityFaker.createTopic(id = 3, course = EntityFaker.createCourse(category = "Flutter")),
-                EntityFaker.createTopic(id = 4, course = EntityFaker.createCourse(category = "Kotlin")),
+                createTopic(id = 1, course = createCourse(category = "Kotlin")),
+                createTopic(id = 2, course = createCourse(category = "Android")),
+                createTopic(id = 3, course = createCourse(category = "Flutter")),
+                createTopic(id = 4, course = createCourse(category = "Kotlin")),
             )
 
             val dtos = topics.map { topic -> GetTopicDto.fromTopic(topic) }

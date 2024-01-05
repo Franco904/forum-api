@@ -21,8 +21,8 @@ import org.springframework.test.context.DynamicPropertySource
 import org.testcontainers.containers.MySQLContainer
 import org.testcontainers.junit.jupiter.Container
 import org.testcontainers.junit.jupiter.Testcontainers
-import shared.fake.model.EntityFaker
 import shared.fake.model.UserRole
+import shared.fake.model.createTopic
 import shared.util.jpa.clearAllTables
 import shared.util.jpa.populateDomainTables
 
@@ -75,10 +75,10 @@ class TopicRepositoryTest {
     inner class FindByCourseNameTest {
         @Test
         fun `Deve retornar uma lista de topicos filtrados pelo nome do curso correto`() {
-            val topic1 = EntityFaker.createTopic(course = courses[0], user = users.first())
-            val topic2 = EntityFaker.createTopic(course = courses[1], user = users.first())
-            val topic3 = EntityFaker.createTopic(course = courses[2], user = users.first())
-            val topic4 = EntityFaker.createTopic(course = courses[0], user = users.first())
+            val topic1 = createTopic(course = courses[0], user = users.first())
+            val topic2 = createTopic(course = courses[1], user = users.first())
+            val topic3 = createTopic(course = courses[2], user = users.first())
+            val topic4 = createTopic(course = courses[0], user = users.first())
 
             sut.save(topic1)
             sut.save(topic2)
@@ -101,10 +101,10 @@ class TopicRepositoryTest {
     inner class FindCountByCourseCategoryTest {
         @Test
         fun `Deve retornar uma lista com a contagem correta de topicos registrados por categoria`() {
-            val topic1 = EntityFaker.createTopic(course = courses[0], user = users.first())
-            val topic2 = EntityFaker.createTopic(course = courses[1], user = users.first())
-            val topic3 = EntityFaker.createTopic(course = courses[2], user = users.first())
-            val topic4 = EntityFaker.createTopic(course = courses[0], user = users.first())
+            val topic1 = createTopic(course = courses[0], user = users.first())
+            val topic2 = createTopic(course = courses[1], user = users.first())
+            val topic3 = createTopic(course = courses[2], user = users.first())
+            val topic4 = createTopic(course = courses[0], user = users.first())
 
             sut.save(topic1)
             sut.save(topic2)
