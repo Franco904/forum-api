@@ -2,6 +2,7 @@ package br.com.alura.forumapi.domain.dto.topic
 
 import br.com.alura.forumapi.domain.model.StatusTopic
 import br.com.alura.forumapi.domain.model.Topic
+import br.com.alura.forumapi.util.formatter
 import java.time.LocalDateTime
 
 data class GetTopicDto(
@@ -19,8 +20,8 @@ data class GetTopicDto(
                 title = topic.title,
                 message = topic.message,
                 status = topic.status,
-                creationDate = topic.creationDate,
-                updateDate = topic.updateDate,
+                creationDate = LocalDateTime.parse(topic.creationDate.format(formatter)),
+                updateDate = LocalDateTime.parse(topic.updateDate.format(formatter)),
             )
         }
     }

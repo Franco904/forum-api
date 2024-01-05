@@ -1,15 +1,17 @@
-package shared.utils.jpa
+package shared.util.jpa
 
 import br.com.alura.forumapi.domain.model.Course
 import br.com.alura.forumapi.domain.model.Role
 import br.com.alura.forumapi.domain.model.User
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.test.jdbc.JdbcTestUtils
+import shared.fake.model.UserRole
 
 fun JdbcTemplate.populateDomainTables(
     courses: List<Course>,
     users: List<User>,
     roles: List<Role>,
+    userRoles: List<UserRole>,
 ) {
     for (course in courses) {
         update("""
@@ -25,9 +27,12 @@ fun JdbcTemplate.populateDomainTables(
         """)
     }
 
-    for ((i, role) in roles.withIndex()) {
+    for (role in roles) {
         update("INSERT INTO roles(id, name) VALUES (${role.id}, '${role.name}');")
-        update("INSERT INTO users_roles(id, user_id, role_id) VALUES ($i, ${users[i].id}, ${role.id});")
+    }
+
+    for (userRole in userRoles) {
+        update("INSERT INTO users_roles(id, user_id, role_id) VALUES (${userRole.id}, ${userRole.userId}, ${userRole.roleId});")
     }
 }
 

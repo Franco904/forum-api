@@ -1,8 +1,8 @@
-package shared.fakes.model
+package shared.fake.model
 
 import br.com.alura.forumapi.domain.dto.topic.PostTopicDto
 import br.com.alura.forumapi.domain.dto.topic.PutTopicDto
-import shared.fakes.faker
+import shared.fake.faker
 
 object DtoFaker {
     fun createPostTopicDto(

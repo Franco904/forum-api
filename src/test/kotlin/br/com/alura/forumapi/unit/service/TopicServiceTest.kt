@@ -23,9 +23,9 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
-import shared.fakes.faker
-import shared.fakes.model.DtoFaker
-import shared.fakes.model.EntityFaker
+import shared.fake.faker
+import shared.fake.model.DtoFaker
+import shared.fake.model.EntityFaker
 import java.time.LocalDateTime
 import java.util.*
 

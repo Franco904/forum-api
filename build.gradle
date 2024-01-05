@@ -41,6 +41,7 @@ dependencies {
 
 	// Request/Response serialization
 	implementation 'com.fasterxml.jackson.module:jackson-module-kotlin'
+	implementation 'com.google.code.gson:gson:2.8.9'
 
 	// Security
 	implementation 'org.springframework.boot:spring-boot-starter-security'

@@ -21,9 +21,10 @@ import org.springframework.test.context.DynamicPropertySource
 import org.testcontainers.containers.MySQLContainer
 import org.testcontainers.junit.jupiter.Container
 import org.testcontainers.junit.jupiter.Testcontainers
-import shared.fakes.model.EntityFaker
-import shared.utils.jpa.clearAllTables
-import shared.utils.jpa.populateDomainTables
+import shared.fake.model.EntityFaker
+import shared.fake.model.UserRole
+import shared.util.jpa.clearAllTables
+import shared.util.jpa.populateDomainTables
 
 @DataJpaTest
 @Testcontainers
@@ -42,6 +43,7 @@ class TopicRepositoryTest {
     )
     private val users = listOf(User(id = 1, name = "test123", email = "test123@user", password = "password"))
     private val roles = listOf(Role(id = 1, name = "READ_WRITE"))
+    private val userRoles = listOf(UserRole(id = 1, userId = 1, roleId = 1))
 
     companion object {
         @Container
@@ -63,7 +65,7 @@ class TopicRepositoryTest {
     @BeforeEach
     fun setUp() {
         jdbcTemplate.clearAllTables()
-        jdbcTemplate.populateDomainTables(courses, users, roles)
+        jdbcTemplate.populateDomainTables(courses, users, roles, userRoles)
 
         mysqlContainer.isRunning.shouldBeTrue()
     }
