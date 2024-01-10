@@ -8,6 +8,8 @@ import br.com.alura.forumapi.domain.repository.UserRepository
 import br.com.alura.forumapi.exception.classes.NotFoundException
 import br.com.alura.forumapi.util.Clock
 import jakarta.transaction.Transactional
+import org.springframework.cache.annotation.CacheEvict
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
@@ -18,6 +20,7 @@ class TopicService(
     private val courseRepository: CourseRepository,
     private val userRepository: UserRepository,
 ) {
+    @Cacheable("topics")
     fun findAll(
         courseName: String? = null,
         paging: Pageable,
@@ -36,6 +39,7 @@ class TopicService(
     }
 
     @Transactional
+    @CacheEvict("topics", allEntries = true)
     fun create(dto: PostTopicDto): GetTopicDto {
         val course = courseRepository.findById(dto.courseId).orElseThrow { NotFoundException("Course not found!") }
         val user = userRepository.findById(dto.userId).orElseThrow { NotFoundException("User not found!") }
@@ -52,6 +56,7 @@ class TopicService(
     }
 
     @Transactional
+    @CacheEvict("topics", allEntries = true)
     fun update(dto: PutTopicDto): GetTopicDto {
         val topic = topicRepository.findById(dto.id).orElseThrow { NotFoundException("Topic not found!") }
 
@@ -66,6 +71,7 @@ class TopicService(
     }
 
     @Transactional
+    @CacheEvict("topics", allEntries = true)
     fun remove(id: Long): Long {
         val topic = topicRepository.findById(id).orElseThrow { NotFoundException("Topic not found!") }
         topicRepository.delete(topic)
