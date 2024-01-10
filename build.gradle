@@ -37,6 +37,7 @@ dependencies {
 	implementation 'org.springframework.data:spring-data-jpa'
 	implementation 'mysql:mysql-connector-java:8.0.33'
 	implementation 'org.liquibase:liquibase-core'
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis:3.2.1'
 	implementation 'io.github.serpro69:kotlin-faker:1.13.0'
 
 	// Request/Response serialization
