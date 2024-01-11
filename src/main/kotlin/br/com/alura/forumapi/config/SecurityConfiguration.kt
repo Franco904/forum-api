@@ -33,6 +33,7 @@ class SecurityConfiguration(
 
                 // Domain endpoints
                 authorize("/topics", hasAuthority("READ_WRITE"))
+                authorize("/answers", hasAuthority("READ_WRITE"))
 
                 // Only accept requests sent by authenticated users
                 authorize(anyRequest, authenticated)

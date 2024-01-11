@@ -51,6 +51,9 @@ dependencies {
     // Documentation
     implementation 'org.springdoc:springdoc-openapi-ui:1.7.0'
 
+    // E-mail
+    implementation 'org.springframework.boot:spring-boot-starter-mail:3.2.1'
+
     // Helper
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
