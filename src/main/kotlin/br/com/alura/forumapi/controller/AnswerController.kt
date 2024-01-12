@@ -11,7 +11,6 @@ import org.springframework.web.util.UriComponentsBuilder
 
 @RestController
 @RequestMapping("/topics/{topicId}/answers")
-@SecurityRequirement(name = "Bearer Auth")
 class AnswerController(
     private val answerService: AnswerService,
 ) {

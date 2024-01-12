@@ -12,7 +12,6 @@ import org.springframework.web.util.UriComponentsBuilder
 
 @RestController
 @RequestMapping("/topics")
-@SecurityRequirement(name = "Bearer Auth")
 class TopicController(
     private val topicService: TopicService,
 ) {
