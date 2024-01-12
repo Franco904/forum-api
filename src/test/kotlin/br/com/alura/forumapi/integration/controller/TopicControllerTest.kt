@@ -26,6 +26,7 @@ import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.setup.DefaultMockMvcBuilder
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import org.springframework.web.context.WebApplicationContext
+import org.testcontainers.containers.GenericContainer
 import org.testcontainers.containers.MySQLContainer
 import org.testcontainers.junit.jupiter.Container
 import org.testcontainers.junit.jupiter.Testcontainers
@@ -79,12 +80,20 @@ class TopicControllerTest {
             withPassword("123123as")
         }
 
+        @Container
+        private val redisContainer = GenericContainer<Nothing>("redis:latest").apply {
+            withExposedPorts(6379)
+        }
+
         @JvmStatic
         @DynamicPropertySource
         fun getProperties(registry: DynamicPropertyRegistry) {
             registry.add("spring.datasource.url", mysqlContainer::getJdbcUrl)
             registry.add("spring.datasource.username", mysqlContainer::getUsername)
             registry.add("spring.datasource.password", mysqlContainer::getPassword)
+
+            registry.add("spring.data.redis.host", redisContainer::getHost)
+            registry.add("spring.data.redis.port", redisContainer::getFirstMappedPort)
         }
     }
 

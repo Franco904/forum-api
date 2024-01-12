@@ -3,7 +3,6 @@ package br.com.alura.forumapi.controller
 import br.com.alura.forumapi.domain.dto.answer.GetAnswerDto
 import br.com.alura.forumapi.domain.dto.answer.PostAnswerDto
 import br.com.alura.forumapi.service.AnswerService
-import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
