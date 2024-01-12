@@ -32,8 +32,8 @@ class SecurityConfiguration(
                 authorize(HttpMethod.GET, "/v3/api-docs/**", permitAll)
 
                 // Domain endpoints
-                authorize("/topics", hasAuthority("READ_WRITE"))
-                authorize("/answers", hasAuthority("READ_WRITE"))
+                authorize("/report/**", hasAuthority("ADMIN"))
+                authorize("/topics/**", hasAuthority("READ_WRITE"))
 
                 // Only accept requests sent by authenticated users
                 authorize(anyRequest, authenticated)
