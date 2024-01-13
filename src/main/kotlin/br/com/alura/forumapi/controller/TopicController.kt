@@ -14,7 +14,7 @@ import org.springframework.web.util.UriComponentsBuilder
 class TopicController(
     private val topicService: TopicService,
 ) {
-//    @GetMapping
+    @GetMapping
     fun getAll(
         @RequestParam(required = false) courseName: String?,
         paging: Pageable,
