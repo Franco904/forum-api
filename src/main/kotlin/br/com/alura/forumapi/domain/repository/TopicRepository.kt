@@ -8,7 +8,7 @@ import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 
-interface TopicRepository : JpaRepository<Topic> {
+interface TopicRepository : JpaRepository<Topic, Long> {
     fun findByCourseName(name: String, paging: Pageable): Page<Topic>
 
     @Query("""
