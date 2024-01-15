@@ -46,13 +46,13 @@ class ExceptionHandler {
     @ExceptionHandler(Exception::class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     fun handleInternalServerError(
-        exception: NotFoundException,
+        exception: Exception,
         request: HttpServletRequest,
     ): GetErrorDto {
         return GetErrorDto(
             statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value(),
             error = HttpStatus.INTERNAL_SERVER_ERROR.name,
-            message = exception.message,
+            message = exception.message ?: "Erro interno do servidor",
             path = request.servletPath,
         )
     }

@@ -1,0 +1,56 @@
+name: forum-api CI
+
+on:
+  push:
+    branches:
+      - '**'
+  pull_request:
+    branches:
+      - '**'
+
+jobs:
+  build:
+    name: Gradle build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Set JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: '17'
+
+      - name: Cache Gradle dependencies
+        uses: actions/cache@v1
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: ${{ runner.os }}-gradle
+
+      - name: Build app
+        uses: gradle/gradle-build-action@bd5760595778326ba7f1441bcf7e88b49de61a25
+        with:
+          arguments: build
+
+  in-docker-tests:
+    name: Automated tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Set JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: '17'
+
+      - name: Cache Gradle dependencies
+        uses: actions/cache@v1
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: ${{ runner.os }}-gradle
+
+      - name: Execute tests
+        run: ./gradlew test

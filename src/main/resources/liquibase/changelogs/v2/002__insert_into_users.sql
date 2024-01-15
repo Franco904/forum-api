@@ -1,10 +1,3 @@
-CREATE TABLE users(
-    id INT NOT NULL AUTO_INCREMENT,
-    name VARCHAR(45) NOT NULL,
-    email VARCHAR(45) NOT NULL,
-    PRIMARY KEY(id)
-);
-
 INSERT INTO users(id, name, email) VALUES
 (1, 'little_grasshopper99', 'lg99@email.com'),
 (2, 'young_snake11', 'ys11@email.com'),

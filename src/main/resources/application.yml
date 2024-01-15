@@ -1,12 +1,9 @@
 spring:
   datasource:
-    driverClassName: org.h2.Driver
-    url: jdbc:h2:mem:forum
-    username: sa
-    password:
-  h2:
-    console:
-      enabled: true
+    driverClassName: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/forum
+    username: root
+    password: root
   jpa:
     properties:
       hibernate:
@@ -14,5 +11,10 @@ spring:
         format_sql: true
   liquibase:
     change-log: liquibase/master.xml
+  cache:
+    type: redis
+  redis:
+    host: localhost
+    port: 6379
 jwt:
-  secret: secreto
+  secret: secret

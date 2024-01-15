@@ -2,6 +2,8 @@ package br.com.alura.forumapi.domain.dto.topic
 
 import br.com.alura.forumapi.domain.model.StatusTopic
 import br.com.alura.forumapi.domain.model.Topic
+import br.com.alura.forumapi.util.formatter
+import java.io.Serializable
 import java.time.LocalDateTime
 
 data class GetTopicDto(
@@ -10,7 +12,8 @@ data class GetTopicDto(
     val message: String,
     val status: StatusTopic,
     val creationDate: LocalDateTime,
-) {
+    val updateDate: LocalDateTime,
+): Serializable {
     companion object {
         fun fromTopic(topic: Topic): GetTopicDto {
             return GetTopicDto(
@@ -18,7 +21,8 @@ data class GetTopicDto(
                 title = topic.title,
                 message = topic.message,
                 status = topic.status,
-                creationDate = topic.creationDate,
+                creationDate = LocalDateTime.parse(topic.creationDate.format(formatter)),
+                updateDate = LocalDateTime.parse(topic.updateDate.format(formatter)),
             )
         }
     }
