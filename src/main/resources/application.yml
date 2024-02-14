@@ -1,7 +1,7 @@
 spring:
   datasource:
     driverClassName: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/forum
+    url: jdbc:mysql://forum-db:3306/forum?createDatabaseIfNotExist=true
     username: root
     password: root
   jpa:
@@ -14,7 +14,7 @@ spring:
   cache:
     type: redis
   redis:
-    host: localhost
+    host: forum-cache
     port: 6379
 jwt:
   secret: secret
